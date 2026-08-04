@@ -1,0 +1,343 @@
+openapi: 3.0.3
+info:
+  title: QA Review AI API
+  version: 1.0.0
+  description: API REST para revisão, padronização e classificação de relatos de bugs.
+servers:
+  - url: /api
+paths:
+  /auth/login:
+    post:
+      summary: Autenticar um usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Credenciais inválidas
+  /users:
+    post:
+      summary: Cadastrar usuário
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: Usuário criado
+        '403':
+          description: Sem permissão
+    get:
+      summary: Consultar todos os usuários
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: Lista de usuários
+  /bug-reviews:
+    post:
+      summary: Criar análise de bug
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BugReviewRequest'
+      responses:
+        '201':
+          description: Análise criada
+        '400':
+          description: Dados inválidos
+        '422':
+          description: Resposta inválida da IA
+    get:
+      summary: Consultar análises de bug
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/severity'
+        - $ref: '#/components/parameters/category'
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/startDate'
+        - $ref: '#/components/parameters/endDate'
+      responses:
+        '200':
+          description: Lista de análises
+  /bug-reviews/{id}:
+    get:
+      summary: Consultar análise por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Análise encontrada
+        '403':
+          description: Sem permissão
+        '404':
+          description: Recurso não encontrado
+  /severities:
+    get:
+      summary: Consultar severidades
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: Lista de critérios de severidade
+    post:
+      summary: Cadastrar severidade
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeverityCriterionRequest'
+      responses:
+        '201':
+          description: Critério criado
+        '403':
+          description: Sem permissão
+  /severities/{id}:
+    put:
+      summary: Editar severidade
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeverityCriterionRequest'
+      responses:
+        '200':
+          description: Critério atualizado
+        '403':
+          description: Sem permissão
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: API disponível
+  /docs:
+    get:
+      summary: Swagger UI
+      responses:
+        '200':
+          description: Documentação renderizada
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 10
+    severity:
+      name: severity
+      in: query
+      schema:
+        type: string
+    category:
+      name: category
+      in: query
+      schema:
+        type: string
+    userId:
+      name: userId
+      in: query
+      schema:
+        type: string
+    startDate:
+      name: startDate
+      in: query
+      schema:
+        type: string
+        format: date-time
+    endDate:
+      name: endDate
+      in: query
+      schema:
+        type: string
+        format: date-time
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserSummary'
+    CreateUserRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - role
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [admin, analyst]
+    BugReviewRequest:
+      type: object
+      required:
+        - description
+        - affectedSystem
+        - scope
+        - blocksEssentialFunction
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          minLength: 20
+          maxLength: 5000
+        affectedSystem:
+          type: string
+        stepsToReproduce:
+          type: array
+          items:
+            type: string
+        expectedResult:
+          type: string
+        actualResult:
+          type: string
+        environment:
+          type: string
+        browser:
+          type: string
+        operatingSystem:
+          type: string
+        device:
+          type: string
+        frequency:
+          type: string
+        blocksEssentialFunction:
+          type: boolean
+        hasAlternativeFlow:
+          type: boolean
+        hasDataLoss:
+          type: boolean
+        hasFinancialRisk:
+          type: boolean
+        hasSecurityRisk:
+          type: boolean
+        scope:
+          type: string
+          enum: [one_user, some_users, all_users, unknown]
+        evidence:
+          type: array
+          items:
+            type: string
+    BugReviewResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        severity:
+          type: string
+          enum: [S1, S2, S3, S4]
+        severityJustification:
+          type: string
+        category:
+          type: string
+        qualityScore:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+    SeverityCriterionRequest:
+      type: object
+      required:
+        - code
+        - title
+        - description
+      properties:
+        code:
+          type: string
+          enum: [S1, S2, S3, S4]
+        title:
+          type: string
+        description:
+          type: string
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string

@@ -1,0 +1,42 @@
+{
+  "name": "qa-review-ai",
+  "version": "1.0.0",
+  "description": "API REST para revisão e classificação de relatos de bugs com IA generativa",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "nyc mocha --exit \"tests/**/*.test.js\"",
+    "test:unit": "mocha --exit \"tests/unit/**/*.test.js\"",
+    "test:integration": "mocha --exit \"tests/integration/**/*.test.js\"",
+    "coverage": "nyc report --reporter=text-summary",
+    "validate": "node --check src/app.js && node --check src/server.js"
+  },
+  "keywords": [
+    "qa",
+    "express",
+    "api",
+    "ai"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.2",
+    "dotenv": "^16.4.2",
+    "express": "^4.19.2",
+    "helmet": "^8.0.1",
+    "jsonwebtoken": "^9.0.1",
+    "swagger-ui-express": "^4.0.1",
+    "uuid": "^8.3.2",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.8.2",
+    "nodemon": "^2.0.21",
+    "nyc": "^17.0.0",
+    "supertest": "^6.0.3"
+  }
+}
