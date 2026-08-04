@@ -1,5 +1,5 @@
 class BugReview {
-  constructor({ id, userId, title, summary, stepsToReproduce, expectedResult, actualResult, environment, browser, operatingSystem, device, frequency, blocksEssentialFunction, hasAlternativeFlow, hasDataLoss, scope, hasFinancialRisk, hasSecurityRisk, evidence, severity, severityJustification, category, risksIdentified, missingInformation, complementaryQuestions, qualityScore, createdAt, updatedAt }) {
+  constructor({ id, userId, title, summary, stepsToReproduce, expectedResult, actualResult, environment, browser, operatingSystem, device, frequency, blocksEssentialFunction, hasAlternativeFlow, hasDataLoss, scope, hasFinancialRisk, hasSecurityRisk, evidence, severity, severityJustification, category, risksIdentified, missingInformation, complementaryQuestions, qualityScore, warnings, confidence, reasoning, createdAt, updatedAt }) {
     this.id = id;
     this.userId = userId;
     this.title = title;
@@ -26,6 +26,9 @@ class BugReview {
     this.missingInformation = missingInformation;
     this.complementaryQuestions = complementaryQuestions;
     this.qualityScore = qualityScore;
+    this.warnings = warnings || [];
+    this.confidence = confidence || 0;
+    this.reasoning = reasoning || [];
     this.createdAt = createdAt || new Date().toISOString();
     this.updatedAt = updatedAt || new Date().toISOString();
   }

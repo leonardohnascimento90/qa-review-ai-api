@@ -29,14 +29,24 @@ async function createBugReview(req, res, next) {
     const severityJustification = aiResult.severityJustification || buildSeverityJustification(normalizedPayload).justification;
     const qualityScore = Number.isInteger(aiResult.qualityScore) ? aiResult.qualityScore : calculateQualityScore(normalizedPayload);
 
+    const stepsToReproduce = Array.isArray(aiResult.stepsToReproduce) && aiResult.stepsToReproduce.length > 0
+      ? aiResult.stepsToReproduce
+      : normalizedPayload.stepsToReproduce;
+    const expectedResult = typeof aiResult.expectedResult === 'string' && aiResult.expectedResult.trim().length > 0
+      ? aiResult.expectedResult
+      : normalizedPayload.expectedResult;
+    const actualResult = typeof aiResult.actualResult === 'string' && aiResult.actualResult.trim().length > 0
+      ? aiResult.actualResult
+      : normalizedPayload.actualResult;
+
     const review = new BugReview({
       id: uuidv4(),
       userId: req.user.id,
       title: aiResult.title || normalizedPayload.title || 'Bug revisado',
       summary: aiResult.summary || normalizedPayload.description,
-      stepsToReproduce: aiResult.stepsToReproduce || normalizedPayload.stepsToReproduce,
-      expectedResult: aiResult.expectedResult || normalizedPayload.expectedResult,
-      actualResult: aiResult.actualResult || normalizedPayload.actualResult,
+      stepsToReproduce,
+      expectedResult,
+      actualResult,
       environment: normalizedPayload.environment,
       browser: normalizedPayload.browser,
       operatingSystem: normalizedPayload.operatingSystem,
@@ -56,6 +66,9 @@ async function createBugReview(req, res, next) {
       missingInformation: aiResult.missingInformation || [],
       complementaryQuestions: aiResult.complementaryQuestions || [],
       qualityScore,
+      warnings: aiResult.warnings || [],
+      confidence: aiResult.confidence || 0,
+      reasoning: aiResult.reasoning || [],
     });
 
     repository.createBugReview(review);
