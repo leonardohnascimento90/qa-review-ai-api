@@ -94,8 +94,8 @@ npm run dev
 - npm run validate
 
 ## Credenciais iniciais
-- Administrador: admin@qa-review.ai / Senha123!
-- Analista: analista@qa-review.ai / Senha123!
+- Administrador: admin@qa-review.ai / <senha configurada localmente>
+- Analista: analista@qa-review.ai / <senha configurada localmente>
 
 ## Exemplos de utilização
 ### Login
