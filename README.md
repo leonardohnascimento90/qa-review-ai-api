@@ -215,6 +215,10 @@ O acompanhamento dos casos de teste, execuções, itens em debug e defeitos est�
 
 [QA Review AI — Plano de Testes](https://github.com/users/leonardohnascimento90/projects/5/views/1)
 
+### Evidências
+
+- [Evidência — cadastro de usuário via Postman](qa/evidence/evidence-postman-user-created.png)
+
 ## Defeitos documentados
 
 Foi identificado e documentado o seguinte defeito:
