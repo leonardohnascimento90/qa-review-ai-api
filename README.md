@@ -217,7 +217,7 @@ O acompanhamento dos casos de teste, execuções, itens em debug e defeitos est�
 
 ### Evidências
 
-- [Evidência — cadastro de usuário via Postman](https://github.com/leonardohnascimento90/qa-review-ai-api/blob/main/qa/evidence/evidence-postman-user-created.png)
+- [Evidência — cadastro de usuário via Postman](https://github.com/leonardohnascimento90/qa-review-ai-api/blob/main/qa/evidence/evidence-postman-user-created.png.png)
 
 ## Defeitos documentados
 
